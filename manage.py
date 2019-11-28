@@ -3,6 +3,7 @@
 import os
 import sys
 
+"""test """
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bil_site_project.settings')
