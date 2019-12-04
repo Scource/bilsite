@@ -4,13 +4,13 @@ from django.conf import settings
 
 class tariff_schemas(models.Model):
 	tariff_name=models.CharField(max_length=5)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_create=models.DateField(auto_now_add=True)
 	DT_modify=models.DateField(auto_now=True)
 
 class tariff_data(models.Model):
 	tariff_date=models.DateField()
-	tariff_schemas=models.ForeignKey(tariff_schemas)
+	tariff_schemas=models.ForeignKey(tariff_schemas, on_delete=models.CASCADE)
 	hour_1=models.FloatField()
 	hour_2=models.FloatField()
 	hour_3=models.FloatField()
@@ -43,16 +43,16 @@ class UR_conn(models.Model):
 	DT_from=models.DateField()
 	DT_to=models.DateField()
 	DT_create=models.DateField(auto_now_add=True)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL)
+	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
 
 class UR_objects(models.Model):
 	code=models.CharField(max_length=25)
 	name=models.CharField(max_length=70)
 	is_pob=models.IntegerField()
-	UR_conn=models.ForeignKey(UR_conn)
+	UR_conn=models.ForeignKey(UR_conn, on_delete=models.CASCADE)
 	DT_create=models.DateField(auto_now_add=True)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL)
+	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
 
 
@@ -153,8 +153,8 @@ class CSPR_data(models.Model):
 	tariff_d30=models.FloatField(null=True)
 	tariff_d31=models.FloatField(null=True)
 	direction=models.IntegerField()
-	conn_UR=models.ForeignKey(conn_UR)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL)
+	conn_UR=models.ForeignKey(UR_conn, on_delete=models.PROTECT)
+	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
 
 class CSB_data(models.Model):
@@ -222,8 +222,8 @@ class CSB_data(models.Model):
 	tariff_d29=models.FloatField(null=True)
 	tariff_d30=models.FloatField(null=True)
 	tariff_d31=models.FloatField(null=True)
-	SE_name=models.ForeignKey(UR_objects)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL)
+	SE_name=models.ForeignKey(UR_objects, on_delete=models.PROTECT)
+	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
 
 
@@ -237,8 +237,5 @@ class CSB_raw(models.Model):
 	zone_1=models.FloatField()
 	zone_2=models.FloatField()
 	zone_3=models.FloatField()
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL)
+	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
-
-
-
