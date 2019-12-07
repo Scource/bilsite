@@ -4,7 +4,7 @@ from django.conf import settings
 
 class tariff_schemas(models.Model):
 	tariff_name=models.CharField(max_length=5)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
+	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_create=models.DateField(auto_now_add=True)
 	DT_modify=models.DateField(auto_now=True)
 
@@ -43,7 +43,7 @@ class UR_conn(models.Model):
 	DT_from=models.DateField()
 	DT_to=models.DateField()
 	DT_create=models.DateField(auto_now_add=True)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
+	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
 
 class UR_objects(models.Model):
@@ -52,7 +52,7 @@ class UR_objects(models.Model):
 	is_pob=models.IntegerField()
 	UR_conn=models.ForeignKey(UR_conn, on_delete=models.CASCADE)
 	DT_create=models.DateField(auto_now_add=True)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
+	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
 
 
@@ -154,7 +154,7 @@ class CSPR_data(models.Model):
 	tariff_d31=models.FloatField(null=True)
 	direction=models.IntegerField()
 	conn_UR=models.ForeignKey(UR_conn, on_delete=models.PROTECT)
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
+	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
 
 class CSB_data(models.Model):
@@ -237,5 +237,5 @@ class CSB_raw(models.Model):
 	zone_1=models.FloatField()
 	zone_2=models.FloatField()
 	zone_3=models.FloatField()
-	user_id=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
+	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
