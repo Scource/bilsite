@@ -43,7 +43,7 @@ class UR_conn(models.Model):
 	DT_from=models.DateField()
 	DT_to=models.DateField()
 	DT_create=models.DateField(auto_now_add=True)
-	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
+	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'), null=True)
 	DT_modify=models.DateField(auto_now=True)
 
 class UR_objects(models.Model):

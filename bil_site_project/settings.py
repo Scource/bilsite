@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bil_site_project',
+    'nbil.apps.NbilConfig',
 ]
 
 MIDDLEWARE = [
