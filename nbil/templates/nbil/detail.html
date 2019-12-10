@@ -1,0 +1,12 @@
+<h1>{{ ob.code }}</h1>
+<ul>
+{% for ss in ob.POB_id.all %}
+	<li>{{ ss.DT_to }}</li>
+
+{% endfor %}
+{% for aa in ob.SE_id.all %}
+	<li>{{ aa.DT_from }}</li>
+    
+
+{% endfor %}
+</ul>

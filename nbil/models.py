@@ -37,24 +37,26 @@ class tariff_data(models.Model):
 	hour_24=models.FloatField()
 
 
+class UR_objects(models.Model):
+	URB=((0, "POB"),
+		(1, "SE")
+		)
+	code=models.CharField(max_length=25)
+	name=models.CharField(max_length=70)
+	is_pob=models.IntegerField(choices=URB, default=0)
+	DT_create=models.DateField(auto_now_add=True)
+	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
+	DT_modify=models.DateField(auto_now=True)
+
 class UR_conn(models.Model):
-	POB_id=models.IntegerField()
-	SE_id=models.IntegerField()
+	POB=models.ForeignKey(UR_objects, related_name='POB_id', on_delete=models.CASCADE)
+	SE=models.ForeignKey(UR_objects, related_name='SE_id', on_delete=models.CASCADE)
 	DT_from=models.DateField()
 	DT_to=models.DateField()
 	DT_create=models.DateField(auto_now_add=True)
 	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'), null=True)
 	DT_modify=models.DateField(auto_now=True)
-
-class UR_objects(models.Model):
-	code=models.CharField(max_length=25)
-	name=models.CharField(max_length=70)
-	is_pob=models.IntegerField()
-	UR_conn=models.ForeignKey(UR_conn, on_delete=models.CASCADE)
-	DT_create=models.DateField(auto_now_add=True)
-	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
-	DT_modify=models.DateField(auto_now=True)
-
+	
 
 class CSPR_data(models.Model):
 	PPE_number=models.CharField(max_length=40)
