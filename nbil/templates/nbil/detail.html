@@ -1,12 +1,15 @@
-<h1>{{ ob.code }}</h1>
-<ul>
-{% for ss in ob.POB_id.all %}
-	<li>{{ ss.DT_to }}</li>
 
-{% endfor %}
-{% for aa in ob.SE_id.all %}
-	<li>{{ aa.DT_from }}</li>
-    
+<h1>{{ ob.name }}</h1>
 
-{% endfor %}
-</ul>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'nbil:detail' ob.id %}" method="post">
+{% csrf_token %}
+
+    <input type="radio" name="dat" id="{{ forloop.counter }}" value="{{ dat }}"><br>
+    <label>{{ ob.code }}</label><br>
+
+<input type="submit" value="Vote">sdf
+<br>
+ <a href="{% url 'nbil:index'%}">Continue</a>
+</form>
