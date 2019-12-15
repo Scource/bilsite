@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
+from django.views.generic.edit import CreateView
 
 from django.http import HttpResponse
 from .models import UR_objects, UR_conn
-
+from .forms import Conn_form
 
 
 def index(request):
@@ -21,9 +22,30 @@ def index(request):
 #             'ob': ob,
 #             'error_message': "You didn't select a choice.",})
 
+
+
+
+
+
+
+
+
+
 def detail(request, detail_id):
 	ob = get_object_or_404(UR_objects, pk=detail_id)
-	return render(request, 'nbil/detail.html', {'ob': ob})
+	if request.method=='POST':
+		form=Conn_form(request.POST)
+		if form.is_valid():
+			ob.save()
+
+	else:
+		form=Conn_form()
+	
+	context={'form':form, 'ob':ob}
+	
+
+
+	return render(request, 'nbil/detail.html', context)
 
 
 

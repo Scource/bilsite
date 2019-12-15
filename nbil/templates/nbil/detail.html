@@ -1,15 +1,15 @@
+{% block content%}
 
-<h1>{{ ob.name }}</h1>
+<h1> nazwa: {{ob.name}}</h1>
+<p>kod: {{ob.code}}</p>
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
-<form action="{% url 'nbil:detail' ob.id %}" method="post">
+<form action="" method="POST">
 {% csrf_token %}
+{{form}}
+<input type="submit" value="Submit">
 
-    <input type="radio" name="dat" id="{{ forloop.counter }}" value="{{ dat }}"><br>
-    <label>{{ ob.code }}</label><br>
-
-<input type="submit" value="Vote">sdf
-<br>
- <a href="{% url 'nbil:index'%}">Continue</a>
 </form>
+
+
+
+{% endblock %}
