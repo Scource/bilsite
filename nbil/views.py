@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.views.generic.edit import CreateView
 
 from django.http import HttpResponse
@@ -25,9 +25,20 @@ def index(request):
 
 
 
+def ur_list(request):
+	urlist=get_list_or_404(UR_objects)
 
+	if request.method=='POST':
+		form=Conn_form(request.POST)
+		if form.is_valid():
+			form.save()
+			#return redirect('nbil:ur_list')
+	else:
+		form=Conn_form()
 
+	context={'form':form, 'urlist':urlist}
 
+	return render(request, 'nbil/ur_list.html', context)
 
 
 
@@ -36,7 +47,7 @@ def detail(request, detail_id):
 	if request.method=='POST':
 		form=Conn_form(request.POST)
 		if form.is_valid():
-			ob.save()
+			form.save()
 
 	else:
 		form=Conn_form()

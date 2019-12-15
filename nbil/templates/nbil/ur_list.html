@@ -1,0 +1,17 @@
+<h1>Lista POB</h1>
+
+	{% for pob in urlist %}
+		<li>{{pob.name}}, 
+		{{pob.code}}</li>
+	{% endfor %}
+
+
+
+<p>dodaj nowy pob</p>
+
+<form action="{% url 'nbil:ur_list' %}" method="POST">
+{% csrf_token %}
+{{form.as_table}}
+<input type="submit" value="Submit">
+
+</form>
