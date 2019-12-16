@@ -1,4 +1,7 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'nbil/style.css.' %}">
 <h1>Lista POB</h1>
+<li>acvncvn</li>
 
 	{% for pob in urlist %}
 		<li>{{pob.name}}, 
@@ -15,3 +18,5 @@
 <input type="submit" value="Submit">
 
 </form>
+
+
