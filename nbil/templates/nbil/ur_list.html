@@ -1,8 +1,11 @@
-<h1>Lista POB</h1>
+<p>Lista POB</p>
 
 	{% for pob in urlist %}
-		<li>{{pob.name}}, 
-		{{pob.code}}</li>
+		<li>{{pob.code}}
+		<a href="{% url 'nbil:uredit' pob.id %}">Edit</a>
+		<a href="{% url 'nbil:urinfo' pob.id %}">Info</a>
+		
+		</li>
 	{% endfor %}
 
 

@@ -1,0 +1,18 @@
+{% block content%}
+
+<p>kod: {{ob.code}}</p>
+
+
+
+<form action="{% url 'nbil:uredit' ob.id %}" method="POST">
+{% csrf_token %}
+{{form.as_p}}
+<input type="submit" value="Edit">
+
+</form>
+
+
+
+{% endblock %}
+
+<h1>asd</h1>

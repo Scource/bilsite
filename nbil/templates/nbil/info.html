@@ -1,0 +1,17 @@
+<p>Informacje na temat UR</p>
+<div style="background-color:lightblue">
+	<li>Index: {{element.id}}</li>
+	<li>Kod: {{element.code}}</li>
+	<li>Nazwa: {{element.name}}</li>
+	<li>Stoworzono: {{element.DT_create}}</li>
+	<li>Dostatnia modyfikacja: {{element.DT_modify}}</li>
+	<li>Typ:
+	{% if element.is_pob %}
+
+	<li>Typ: SE</li>
+	{%else%}
+	<li>Typ: POB</li>
+	{%endif%}
+
+	<li>Utworzył: {{element.user_id}}</li>
+</div>
