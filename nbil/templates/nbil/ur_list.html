@@ -1,11 +1,10 @@
-<<<<<<< HEAD
+{% extends "nbil/base_generic.html" %}
+{% block content %}
 <p>Lista POB</p>
-=======
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'nbil/style.css.' %}">
+
 <h1>Lista POB</h1>
 <li>acvncvn</li>
->>>>>>> d0e0a0d8d72c748fb5c590943333c8035d5b1991
+
 
 	{% for pob in urlist %}
 		<li>{{pob.code}}
@@ -25,5 +24,5 @@
 <input type="submit" value="Submit">
 
 </form>
-
+{% endblock %}
 
