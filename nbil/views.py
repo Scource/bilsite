@@ -39,7 +39,8 @@ def edit(request, urid):
 
 def info(request, urid):
 	element=get_object_or_404(UR_objects, id=urid)
-	conns=get_list_or_404(UR_conn, POB_id=urid)
+	#conns=get_list_or_404(UR_conn, POB_id=urid)
+	conns=UR_conn.objects.filter(POB_id=urid)
 	context={'element':element, 'conns':conns}
 	return render(request, 'nbil/info.html', context)
 
