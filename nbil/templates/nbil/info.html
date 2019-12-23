@@ -1,24 +1,47 @@
+
+
+{% extends "nbil/base_generic.html" %}
+{% block content %}
+
 <p>Informacje na temat UR</p>
-<div style="background-color:lightblue">
+
 	<li>Index: {{element.id}}</li>
 	<li>Kod: {{element.code}}</li>
 	<li>Nazwa: {{element.name}}</li>
 	<li>Stoworzono: {{element.DT_create}}</li>
-	<li>Dostatnia modyfikacja: {{element.DT_modify}}</li>
-	<li>Typ:
+	<li>Ostatnia modyfikacja: {{element.DT_modify}}</li>
 	{% if element.is_pob %}
-
 	<li>Typ: SE</li>
 	{%else%}
 	<li>Typ: POB</li>
 	{%endif%}
 
-	<li>Utworzył: {{element.user_id}}</li>
-</div>
+	<li>Utworzył: {{element.user.username}}</li>
 
 
+<p>Lista połczeń dotyczcych UR</p>
+
+<table class="table table-condensed">
+	<tr>
+		<th>ID</th>
+		<th>Data od</th>
+		<th>Data do</th>
+		<th>POB</th>
+		<th>SE</th>
+
+	</tr>
 {% for i in conns %}
-	{{i.id}}
-	{{i.DT_to}}
+	<tr>
+		<td>{{i.id}}</td>
+		<td>{{i.DT_from}}</td>
+		<td>{{i.DT_to}}</td>
+		<td>{{i.POB.name}}</td>
+		<td>{{i.SE.name}}</td>
+	</tr>
+	
+
+	
 
 {%endfor%}
+</table>
+{%endblock%}

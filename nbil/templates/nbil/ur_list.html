@@ -1,19 +1,26 @@
 {% extends "nbil/base_generic.html" %}
 {% block content %}
-<p>Lista POB</p>
-
 <h1>Lista POB</h1>
-<li>acvncvn</li>
-
-
-	{% for pob in urlist %}
-		<li>{{pob.code}}
-		<a href="{% url 'nbil:uredit' pob.id %}">Edit</a>
-		<a href="{% url 'nbil:urinfo' pob.id %}">Info</a>
+	<table class="table">
+		<tr>
+			<th>ID</th>
+			<th>name</th>
+			<th>code</th>
+			<th>Edytuj</th>
+			<th>Przejdź</th>
+		</tr>
+		{% for pob in urlist %}
+		<tr>
+			
+			<td>{{pob.id}}</td>
+			<td>{{pob.name}}</td>
+			<td>{{pob.code}}</td>
+			<td><a class="btn btn-primary btn-sm" href="{% url 'nbil:uredit' pob.id %}" role="button">Edit</a></td>
+			<td><a class="btn btn-primary btn-sm" href="{% url 'nbil:urinfo' pob.id %}" role="button">Info</a></td>
+		{% endfor %}	
+		</tr>
 		
-		</li>
-	{% endfor %}
-
+	</table>
 
 
 <p>dodaj nowy pob</p>
