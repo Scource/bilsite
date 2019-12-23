@@ -9,8 +9,9 @@ urlpatterns = [
     path('ur_list', views.ur_list, name='ur_list'),
     path('ur_list/edit<int:urid>/', views.edit, name='uredit'),
     path('ur_list/info<int:urid>/', views.info, name='urinfo'),
-	path('<int:result_id>/check', views.results, name='check'),
-    path('<int:UR>/voteeee', views.vote, name='vote'),
+	path('conn_list/', views.connlist, name='connlist'),
+    path('conn_list/edit<int:urid>/', views.connedit, name='connedit'),
+    path('conn_list/create_conn/', views.createconn, name='conncreate'),
 
 
 ]

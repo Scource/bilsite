@@ -30,7 +30,7 @@
 		<th>SE</th>
 
 	</tr>
-{% for i in conns %}
+{% for i in connsse %}
 	<tr>
 		<td>{{i.id}}</td>
 		<td>{{i.DT_from}}</td>
@@ -38,10 +38,20 @@
 		<td>{{i.POB.name}}</td>
 		<td>{{i.SE.name}}</td>
 	</tr>
-	
-
-	
-
 {%endfor%}
+{% for i in connspob %}
+	<tr>
+		<td>{{i.id}}</td>
+		<td>{{i.DT_from}}</td>
+		<td>{{i.DT_to}}</td>
+		<td>{{i.POB.name}}</td>
+		<td>{{i.SE.name}}</td>
+	</tr>
+{%endfor%}
+
+
+
+
+
 </table>
 {%endblock%}

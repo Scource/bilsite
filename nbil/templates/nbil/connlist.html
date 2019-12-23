@@ -1,0 +1,31 @@
+{% extends "nbil/base_generic.html" %}
+{% block content %}
+<p>Lista połączeń POB-SE</p>
+
+<table class='table'>
+		<tr>
+			<th>ID</th>
+			<th>Początek</th>
+			<th>Koniec</th>
+			<th>POB</th>
+			<th>SE</th>
+			<th>Utworzono</th>
+			<th>Edytuj</th>
+		</tr>
+	{%for l in lista%}
+		<tr>
+			<td>{{l.id}}</td>
+			<td>{{l.DT_from}}</td>
+			<td>{{l.DT_to}}</td>
+			<td><a href="{% url 'nbil:urinfo' l.id %}">{{l.POB.name}}</a></td>
+			<td><a href="{% url 'nbil:urinfo' l.id %}">{{l.SE.name}}</a></td>
+			<td>{{l.DT_create}}</td>
+			<td><a class="btn btn-primary btn-sm" href="{% url 'nbil:connedit' l.id %}" role="button">Edytuj</a></td>
+		</tr>
+	{%endfor%}
+
+
+</table>
+
+
+{%endblock%}

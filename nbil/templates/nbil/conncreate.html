@@ -1,0 +1,13 @@
+{% extends "nbil/base_generic.html" %}
+{% block content %}
+<p>Dodaj nowe połączenie</p>
+
+
+<form action="{% url 'nbil:conncreate' %}" method="POST">
+{% csrf_token %}
+{{form.as_p}}
+<input type="submit" value="Dodaj">
+
+</form>
+
+{% endblock %}

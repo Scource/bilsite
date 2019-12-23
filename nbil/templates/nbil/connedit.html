@@ -1,0 +1,11 @@
+{% extends "nbil/base_generic.html" %}
+{% block content %}
+<p>ID obiektu: {{ob.id}}</p>
+
+<form action="{% url 'nbil:connedit' ob.id %}" method="POST">
+{% csrf_token %}
+{{form.as_p}}
+
+<input type="submit" value="Edytuj">
+</form>
+{% endblock %}

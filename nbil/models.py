@@ -48,6 +48,9 @@ class UR_objects(models.Model):
 	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
 
+	def __str__(self):
+		return self.name
+
 class UR_conn(models.Model):
 	POB=models.ForeignKey(UR_objects, related_name='POB_id', on_delete=models.CASCADE)
 	SE=models.ForeignKey(UR_objects, related_name='SE_id', on_delete=models.CASCADE)
@@ -57,6 +60,9 @@ class UR_conn(models.Model):
 	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'), null=True)
 	DT_modify=models.DateField(auto_now=True)
 	
+	def __str__(self):
+		return self.name
+
 
 class CSPR_data(models.Model):
 	PPE_number=models.CharField(max_length=40)
