@@ -1,5 +1,11 @@
 {% extends "nbil/base_generic.html" %}
 {% block content %}
+
+<form method="get">
+    {{ filtrrr.form.as_table }}
+    <button type="submit">Search</button>
+</form>
+
 <h1>Lista POB</h1>
 	<table class="table">
 		<tr>
@@ -9,7 +15,7 @@
 			<th>Edytuj</th>
 			<th>Przejdź</th>
 		</tr>
-		{% for pob in urlist %}
+		{% for pob in filtrrr.qs %}
 		<tr>
 			
 			<td>{{pob.id}}</td>
@@ -22,14 +28,5 @@
 		
 	</table>
 
-
-<p>dodaj nowy pob</p>
-
-<form action="{% url 'nbil:ur_list' %}" method="POST">
-{% csrf_token %}
-{{form.as_table}}
-<input type="submit" value="Submit">
-
-</form>
 {% endblock %}
 

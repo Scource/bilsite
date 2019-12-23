@@ -4,6 +4,7 @@ from django.views.generic.edit import CreateView
 from django.http import HttpResponse
 from .models import UR_objects, UR_conn
 from .forms import Conn_form, UR_edit_form, conn_edit_form
+from .filters import URFilter
 
 
 def index(request):
@@ -14,15 +15,23 @@ def index(request):
 def ur_list(request):
 	urlist=get_list_or_404(UR_objects)
 
-	if request.method=='POST':
-		form=Conn_form(request.POST)
-		if form.is_valid():
-			form.save()
-			return redirect('nbil:ur_list')
-	else:
-		form=Conn_form()
-	context={'form':form, 'urlist':urlist}
+	# if request.method=='POST':
+	# 	form=Conn_form(request.POST)
+	# 	if form.is_valid():
+	# 		form.save()
+	# 		return redirect('nbil:ur_list')
+	# else:
+	# 	form=Conn_form()
+	# context={'form':form, 'urlist':urlist}
+	# return render(request, 'nbil/ur_list.html', context)
+
+	fil=UR_objects.objects.all()
+	filtrrr=URFilter(request.GET, queryset=fil)
+	context={'filtrrr':filtrrr, 'urlist':urlist}
 	return render(request, 'nbil/ur_list.html', context)
+
+
+
 
 
 def edit(request, urid):
