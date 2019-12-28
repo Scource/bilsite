@@ -1,9 +1,0 @@
-{% if kutasy %}
-    <ul>
-    {% for urr in kutasy %}
-        <li><a href="{% url 'nbil:detail' urr.id %}">{{ urr.name }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}

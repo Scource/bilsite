@@ -12,29 +12,31 @@
 <body>
 	<div class="menu">
 	</div>
-	<div class=page>
-	
+
+	<div class=page>	
 
 		<div class="sidebar">
-		<a href="">aaa</a>
-		<a href="">bbb</a>
-		<a href="">ccc</a>
-		<a href="">ddd</a>
-		<a href="">eee</a>
+		<a href="{% url 'nbil:connlist' %}">Połączenia</a>
+		<a href="{% url 'nbil:ur_list' %}">Użytkownicy rynku</a>
+		<a href="">Schematy taryfowe</a>
+		<a href="">Dane SKOK-D</a>
+		<a href="">Dane Innop</a>
 
 		</div>
 		<div class="main">
     	{% block content %}{% endblock %}
 		</div>
 
-	</div>
+	
 
+	</div>
 	<div class='footer'>
 	
 	<p>create by</p>
 	<p>home</p>
 
 	</div>
+	
 
 </body>
 </html>

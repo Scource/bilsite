@@ -1,4 +1,38 @@
-* {
+
+
+.page {
+display: flex;
+align-items: stretch;
+}
+
+
+.sidebar {
+flex-basis: 200px;
+flex-grow: 1;
+}
+
+.main {
+flex-basis: 0;
+flex-grow: 999;
+
+}
+
+.footer {
+position: absolute;
+clear: both;
+height:100px;
+background-color: #C0C0C0;
+width:100%;
+bottom: 0;
+}
+
+.menu {
+ height: 200px;
+ background-color: #ff0000;
+ }
+
+
+/** {
 margin: 0;
 padding: 0;
 box-sizing: border-box;
@@ -8,8 +42,9 @@ box-sizing: border-box;
 margin: 0 auto;
 overflow: hidden;
 background-color: #ABABAB;
-height: 100;
 display: flex;
+justify-content: space-around;
+margin: auto;
 
 }
 
@@ -30,7 +65,7 @@ background-color: #111;
 .sidebar a {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 1px;
   color: #818181;
   display: block;
 }
@@ -43,6 +78,7 @@ background-color: #111;
 width:90%;
 padding-left: 50px;
 float: left;
+flex-grow: 99;
 
 }
 
@@ -50,6 +86,7 @@ float: left;
 margin-left: 100px;
 font-size: 15px;
 color: #ffffff;
+margin: auto;
 }
 
 
@@ -62,3 +99,6 @@ width:100%;
 bottom: 0;
 }
 
+.add_button {
+float-right;
+}*/

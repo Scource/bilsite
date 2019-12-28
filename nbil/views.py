@@ -3,14 +3,14 @@ from django.views.generic.edit import CreateView
 
 from django.http import HttpResponse
 from .models import UR_objects, UR_conn
-from .forms import Conn_form, UR_edit_form, conn_edit_form
-from .filters import URFilter
+from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create
+from .filters import URFilter, ConnFilter
 
 
 def index(request):
 	ob_list = UR_objects.objects.all()[:6]
 	context = {'kutasy': ob_list}
-	return render(request, 'nbil/index.html', context)
+	return render(request, 'nbil/nbil_index.html', context)
 
 def ur_list(request):
 	urlist=get_list_or_404(UR_objects)
@@ -31,9 +31,6 @@ def ur_list(request):
 	return render(request, 'nbil/ur_list.html', context)
 
 
-
-
-
 def edit(request, urid):
 	ob = get_object_or_404(UR_objects, pk=urid)
 	if request.method=='POST':
@@ -52,13 +49,18 @@ def info(request, urid):
 	connspob=UR_conn.objects.filter(POB_id=urid)
 	connsse=UR_conn.objects.filter(SE_id=urid)
 	context={'element':element, 'connspob':connspob, 'connsse':connsse}
-	return render(request, 'nbil/info.html', context)
+	return render(request, 'nbil/urinfo.html', context)
 
 
 def connlist(request):
-    lista = get_list_or_404(UR_conn)
-    context={'lista':lista}
-    return render(request, 'nbil/connlist.html', context)
+	lista = get_list_or_404(UR_conn)
+	fil=UR_conn.objects.all()
+	filtrrr=ConnFilter(request.GET, queryset=fil)
+	context={'filtrrr':filtrrr, 'lista':lista}
+	return render(request, 'nbil/connlist.html', context)
+
+    # context={'lista':lista}
+    # return render(request, 'nbil/connlist.html', context)
 
 def connedit(request, urid):
 	ob = get_object_or_404(UR_conn, pk=urid)
@@ -83,3 +85,16 @@ def createconn(request):
 		form=Conn_form()
 	context={'form':form}
 	return render(request, 'nbil/conncreate.html', context)
+
+
+
+def UR_create(request):
+	if request.method=='POST':
+		form=UR_form_create(request.POST)
+		if form.is_valid():
+			form.save()
+			return redirect('nbil:ur_list')
+	else:
+		form=UR_form_create()
+	context={'form':form}
+	return render(request, 'nbil/urcreate.html', context)

@@ -1,0 +1,13 @@
+{% extends "nbil/base_generic.html" %}
+{% block content %}
+<p>Stwórz nowego użytkownika rynku</p>
+
+
+<form action="{% url 'nbil:urcreate' %}" method="POST">
+{% csrf_token %}
+{{form.as_p}}
+<input type="submit" value="Dodaj">
+
+</form>
+
+{% endblock %}

@@ -2,6 +2,16 @@
 {% block content %}
 <p>Lista połączeń POB-SE</p>
 
+<div class='add_button'>
+<a class="btn btn-primary btn-sm" href="{% url 'nbil:conncreate' %}" role="button">+ Dodaj Połączenie</a>
+</div>
+
+<form method="get">
+    {{ filtrrr.form.as_table }}
+    <button type="submit">Szukaj</button>
+</form>
+
+
 <table class='table'>
 		<tr>
 			<th>ID</th>
@@ -12,7 +22,7 @@
 			<th>Utworzono</th>
 			<th>Edytuj</th>
 		</tr>
-	{%for l in lista%}
+	{%for l in filtrrr.qs %}
 		<tr>
 			<td>{{l.id}}</td>
 			<td>{{l.DT_from}}</td>

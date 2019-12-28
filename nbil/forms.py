@@ -17,6 +17,13 @@ class UR_edit_form(forms.ModelForm):
 		model=UR_objects
 		exclude = ['user_id']
 
+
+class UR_form_create(forms.ModelForm):
+	class Meta:
+		model=UR_objects
+		exclude = ['user_id']
+
+
 class conn_edit_form(forms.ModelForm):
 
 	#POB = forms.ModelChoiceField(queryset=UR_objects.objects.filter(id=1), to_field_name = 'name')

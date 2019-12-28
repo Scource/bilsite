@@ -1,6 +1,10 @@
 {% extends "nbil/base_generic.html" %}
 {% block content %}
 
+<div class='add_button'>
+<a class="btn btn-primary btn-sm" href="{% url 'nbil:urcreate' %}" role="button">+ Dodaj UR</a>
+</div>
+
 <form method="get">
     {{ filtrrr.form.as_table }}
     <button type="submit">Search</button>
