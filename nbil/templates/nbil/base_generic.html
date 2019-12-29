@@ -10,11 +10,15 @@
  
 </head>
 <body>
-	<div class="menu">
-	</div>
 
-	<div class=page>	
 
+<div class="menu"></div>
+
+
+	<div class="page">	
+
+	
+	
 		<div class="sidebar">
 		<a href="{% url 'nbil:connlist' %}">Połączenia</a>
 		<a href="{% url 'nbil:ur_list' %}">Użytkownicy rynku</a>
@@ -23,19 +27,23 @@
 		<a href="">Dane Innop</a>
 
 		</div>
+
 		<div class="main">
     	{% block content %}{% endblock %}
 		</div>
 
-	
 
 	</div>
+
 	<div class='footer'>
 	
 	<p>create by</p>
 	<p>home</p>
 
 	</div>
+
+	
+
 	
 
 </body>
