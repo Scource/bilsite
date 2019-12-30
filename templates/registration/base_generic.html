@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block title %}<title>aaaaN1111111sdfd</title>{% endblock %}
+	{% load static %}
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="{% static 'nbil/style.css.' %}">
+
+ 
+</head>
+<body>
+
+
+<div class="menu"></div>
+
+
+	<div class="page">	
+
+	
+	
+		<div class="sidebar">
+		<a href="{% url 'nbil:connlist' %}">Połączenia</a>
+		<a href="{% url 'nbil:ur_list' %}">Użytkownicy rynku</a>
+		<a href="">Schematy taryfowe</a>
+		<a href="">Dane SKOK-D</a>
+		<a href="">Dane Innop</a>
+
+		</div>
+
+		<div class="main">
+    	{% block content %}{% endblock %}
+		</div>
+
+
+	</div>
+
+	<div class='footer'>
+	
+	<p>create by</p>
+	<p>home</p>
+
+	</div>
+
+	
+
+	
+
+</body>
+</html>

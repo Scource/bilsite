@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.views.generic.edit import CreateView
+from django.contrib.auth.decorators import login_required
 
 from django.http import HttpResponse
 from .models import UR_objects, UR_conn
@@ -14,17 +15,6 @@ def index(request):
 
 def ur_list(request):
 	urlist=get_list_or_404(UR_objects)
-
-	# if request.method=='POST':
-	# 	form=Conn_form(request.POST)
-	# 	if form.is_valid():
-	# 		form.save()
-	# 		return redirect('nbil:ur_list')
-	# else:
-	# 	form=Conn_form()
-	# context={'form':form, 'urlist':urlist}
-	# return render(request, 'nbil/ur_list.html', context)
-
 	fil=UR_objects.objects.all()
 	filtrrr=URFilter(request.GET, queryset=fil)
 	context={'filtrrr':filtrrr, 'urlist':urlist}
@@ -62,6 +52,7 @@ def connlist(request):
     # context={'lista':lista}
     # return render(request, 'nbil/connlist.html', context)
 
+@login_required
 def connedit(request, urid):
 	ob = get_object_or_404(UR_conn, pk=urid)
 	if request.method=='POST':
@@ -74,12 +65,14 @@ def connedit(request, urid):
 	context={'form':form, 'ob':ob}
 	return render(request, 'nbil/connedit.html', context)
 
-
+@login_required
 def createconn(request):
 	if request.method=='POST':
 		form=Conn_form(request.POST)
 		if form.is_valid():
-			form.save()
+			newConn=form.save(commit=False)
+			newConn.user_id=request.user.id
+			newConn.save()
 			return redirect('nbil:connlist')
 	else:
 		form=Conn_form()
@@ -87,14 +80,17 @@ def createconn(request):
 	return render(request, 'nbil/conncreate.html', context)
 
 
-
+@login_required
 def UR_create(request):
+	username=request.user
 	if request.method=='POST':
 		form=UR_form_create(request.POST)
 		if form.is_valid():
-			form.save()
+			newUR=form.save(commit=False)
+			newUR.user_id=request.user.id
+			newUR.save()
 			return redirect('nbil:ur_list')
 	else:
 		form=UR_form_create()
-	context={'form':form}
+	context={'form':form, 'username':username}
 	return render(request, 'nbil/urcreate.html', context)

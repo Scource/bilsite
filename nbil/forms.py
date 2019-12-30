@@ -21,7 +21,7 @@ class UR_edit_form(forms.ModelForm):
 class UR_form_create(forms.ModelForm):
 	class Meta:
 		model=UR_objects
-		exclude = ['user_id']
+		fields = ['code', 'name', 'is_pob']
 
 
 class conn_edit_form(forms.ModelForm):

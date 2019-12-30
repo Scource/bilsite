@@ -1,6 +1,7 @@
 {% extends "nbil/base_generic.html" %}
 {% block content %}
 <p>Stwórz nowego użytkownika rynku</p>
+<p>Zalogowany jako: {{username}}</p>
 
 
 <form action="{% url 'nbil:urcreate' %}" method="POST">
