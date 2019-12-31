@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
+from tablib import Dataset
 
 from django.http import HttpResponse
 from .models import UR_objects, UR_conn
-from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create
+from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create, add_tariff_form
 from .filters import URFilter, ConnFilter
+from .resources import TariffResource
 
 
 def index(request):
@@ -94,3 +96,26 @@ def UR_create(request):
 		form=UR_form_create()
 	context={'form':form, 'username':username}
 	return render(request, 'nbil/urcreate.html', context)
+
+
+@login_required
+def add_tariff(request):
+	if request.method == 'POST':
+		resource = TariffResource()
+		dataset = Dataset()
+		new = request.FILES['myfile']
+
+		imported_data = dataset.load(new.read().decode('utf-8'),format='csv')
+		result = resource.import_data(dataset, dry_run=True)  # Test the data import
+
+		if not result.has_errors():
+			resource.import_data(dataset, dry_run=False)  # Actually import now
+
+	return render(request, 'nbil/addtariff.html')
+
+
+
+	
+
+
+

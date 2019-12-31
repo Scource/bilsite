@@ -1,5 +1,5 @@
 from django import forms
-from .models import UR_objects, UR_conn
+from .models import UR_objects, UR_conn, tariff_data
 
 
 class Conn_form(forms.ModelForm):
@@ -33,3 +33,9 @@ class conn_edit_form(forms.ModelForm):
 		model=UR_conn
 		fields = ['POB', 'SE', 'DT_from', 'DT_to']
 
+
+class add_tariff_form(forms.ModelForm):
+	file = forms.FileField()
+	class Meta:
+		model=tariff_data
+		fields=[]

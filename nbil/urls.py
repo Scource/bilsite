@@ -17,5 +17,7 @@ urlpatterns = [
     path('conn_list/create_conn/', views.createconn, name='conncreate'),
 
 
+    path('tariff/', views.add_tariff, name='tariff'),
+
 
 ]
