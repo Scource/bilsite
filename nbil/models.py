@@ -2,15 +2,9 @@ from django.db import models
 from django.conf import settings
 
 
-class tariff_schemas(models.Model):
-	tariff_name=models.CharField(max_length=5)
-	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
-	DT_create=models.DateField(auto_now_add=True)
-	DT_modify=models.DateField(auto_now=True)
-
 class tariff_data(models.Model):
 	tariff_date=models.DateField()
-	tariff_schemas=models.ForeignKey(tariff_schemas, on_delete=models.CASCADE)
+	tariff_schemas=models.CharField(max_length=5)
 	hour_1=models.FloatField()
 	hour_2=models.FloatField()
 	hour_3=models.FloatField()
@@ -41,34 +35,33 @@ class tariff_data(models.Model):
 
 	@classmethod
 	def save_1h(cls):
-		aa={'tariff_date':'2012-01-01'}
-		ob=tariff_data.objects.update_or_create(defaults=aa, 
-			hour_1=1,
-			hour_2=1,
-			hour_3=1,
-			hour_4=1,
-			hour_5=1,
-			hour_6=1,
-			hour_7=1,
-			hour_8=1,
-			hour_9=1,
-			hour_10=1,
-			hour_11=1,
-			hour_12=1,
-			hour_13=1,
-			hour_14=1,
-			hour_15=1,
-			hour_16=1,
-			hour_17=1,
-			hour_18=1,
-			hour_19=1,
-			hour_20=1,
-			hour_21=1,
-			hour_22=1,
-			hour_23=1,
-			hour_24=1,
-			tariff_schemas_id=1
-			)
+		aa={'tariff_date':'2012-01-04'}
+		ob=tariff_data.objects.update_or_create( 
+			{'hour_1':1,
+			'hour_2':1,
+			'hour_3':1,
+			'hour_4':1,
+			'hour_5':1,
+			'hour_6':1,
+			'hour_7':1,
+			'hour_8':1,
+			'hour_9':1,
+			'hour_10':1,
+			'hour_11':1,
+			'hour_12':1,
+			'hour_13':1,
+			'hour_14':1,
+			'hour_15':1,
+			'hour_16':1,
+			'hour_17':1,
+			'hour_18':1,
+			'hour_19':1,
+			'hour_20':1,
+			'hour_21':1,
+			'hour_22':1,
+			'hour_23':1,
+			'hour_24':1,},
+			defaults={'tariff_schemas':'C11', 'tariff_date':'2012-01-04'})
 
 
 
