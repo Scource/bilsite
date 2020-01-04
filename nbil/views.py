@@ -22,7 +22,7 @@ def ur_list(request):
 	context={'filtrrr':filtrrr, 'urlist':urlist}
 	return render(request, 'nbil/ur_list.html', context)
 
-
+@login_required
 def edit(request, urid):
 	ob = get_object_or_404(UR_objects, pk=urid)
 	if request.method=='POST':
