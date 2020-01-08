@@ -2,11 +2,11 @@
 {% block content %}
 <p>Dodaj nowe połączenie</p>
 
-
-<form action="{% url 'nbil:conncreate' %}" method="POST">
-{% csrf_token %}
-{{form.as_p}}
-<input type="submit" value="Dodaj">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+  </form>
 
 </form>
 

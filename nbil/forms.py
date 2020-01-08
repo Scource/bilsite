@@ -34,8 +34,5 @@ class conn_edit_form(forms.ModelForm):
 		fields = ['POB', 'SE', 'DT_from', 'DT_to']
 
 
-class add_tariff_form(forms.ModelForm):
+class UploadFileForm(forms.Form):
 	file = forms.FileField()
-	class Meta:
-		model=tariff_data
-		fields=[]

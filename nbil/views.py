@@ -5,9 +5,9 @@ from tablib import Dataset
 
 from django.http import HttpResponse
 from .models import UR_objects, UR_conn
-from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create, add_tariff_form
+from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create, UploadFileForm
 from .filters import URFilter, ConnFilter
-from .services import tardata
+from .services import tardata, import_ELP
 
 
 def index(request):
@@ -100,14 +100,14 @@ def UR_create(request):
 
 @login_required
 def add_tariff(request):
-	if request.method == 'POST':
-		dataset = Dataset()
-		new = request.FILES['myfile']
-		tardata()
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            import_ELP(request.FILES['file'])
 
-	return render(request, 'nbil/addtariff.html')
-
-
+    else:
+        form = UploadFileForm()
+    return render(request, 'nbil/addtariff.html', {'form': form})
 
 	
 
