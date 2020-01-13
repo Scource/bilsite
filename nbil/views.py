@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from .models import UR_objects, UR_conn
 from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create, UploadFileForm
 from .filters import URFilter, ConnFilter
-from .services import tardata, import_ELP
+from .services import import_ELZ, import_ELP
 
 
 def index(request):
@@ -110,6 +110,15 @@ def add_tariff(request):
     return render(request, 'nbil/addtariff.html', {'form': form})
 
 	
+@login_required
+def add_zone(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            import_ELZ(request.FILES['file'])
 
+    else:
+        form = UploadFileForm()
+    return render(request, 'nbil/addzone.html', {'form': form})
 
 

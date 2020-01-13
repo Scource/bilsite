@@ -34,11 +34,45 @@ class tariff_data(models.Model):
 		return self.name
 
 	@classmethod
-	def save_1h(cls, deff, data, tar):
+	def save_file(cls, deff, data, tar):
 		tariff_data.objects.update_or_create( 
 			defaults=deff, tariff_date=data, tariff_schemas=tar)
 
+class zone_data(models.Model):
+	zone_date=models.DateField()
+	zone_schemas=models.CharField(max_length=5)
+	hour_1=models.IntegerField()
+	hour_2=models.IntegerField()
+	hour_3=models.IntegerField()
+	hour_4=models.IntegerField()
+	hour_5=models.IntegerField()
+	hour_6=models.IntegerField()
+	hour_7=models.IntegerField()
+	hour_8=models.IntegerField()
+	hour_9=models.IntegerField()
+	hour_10=models.IntegerField()
+	hour_11=models.IntegerField()
+	hour_12=models.IntegerField()
+	hour_13=models.IntegerField()
+	hour_14=models.IntegerField()
+	hour_15=models.IntegerField()
+	hour_16=models.IntegerField()
+	hour_17=models.IntegerField()
+	hour_18=models.IntegerField()
+	hour_19=models.IntegerField()
+	hour_20=models.IntegerField()
+	hour_21=models.IntegerField()
+	hour_22=models.IntegerField()
+	hour_23=models.IntegerField()
+	hour_24=models.IntegerField()
 
+	def __str__(self):
+		return self.name
+
+	@classmethod
+	def save_file(cls, deff, data, tar):
+		zone_data.objects.update_or_create( 
+			defaults=deff, zone_date=data, zone_schemas=tar)
 
 
 class UR_objects(models.Model):

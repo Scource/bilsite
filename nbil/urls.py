@@ -18,6 +18,7 @@ urlpatterns = [
 
 
     path('tariff/', views.add_tariff, name='tariff'),
+    path('zone/', views.add_zone, name='zone'),
 
 
 ]
