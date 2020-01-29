@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from .models import UR_objects, UR_conn
 from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create, UploadFileForm
 from .filters import URFilter, ConnFilter
-from .services import import_ELZ, import_ELP
+from .services import import_ELZ, import_ELP, import_csb_data
 
 
 def index(request):
@@ -16,7 +16,8 @@ def index(request):
 	return render(request, 'nbil/nbil_index.html', context)
 
 def ur_list(request):
-	urlist=get_list_or_404(UR_objects)
+	#urlist=get_list_or_404(UR_objects)
+	urlist = UR_objects.objects.all()
 	fil=UR_objects.objects.all()
 	filtrrr=URFilter(request.GET, queryset=fil)
 	context={'filtrrr':filtrrr, 'urlist':urlist}
@@ -45,7 +46,8 @@ def info(request, urid):
 
 
 def connlist(request):
-	lista = get_list_or_404(UR_conn)
+	#lista = get_list_or_404(UR_conn)
+	lista = UR_conn.objects.all()
 	fil=UR_conn.objects.all()
 	filtrrr=ConnFilter(request.GET, queryset=fil)
 	context={'filtrrr':filtrrr, 'lista':lista}
@@ -110,6 +112,7 @@ def add_tariff(request):
     return render(request, 'nbil/addtariff.html', {'form': form})
 
 	
+
 @login_required
 def add_zone(request):
     if request.method == 'POST':
@@ -122,3 +125,13 @@ def add_zone(request):
     return render(request, 'nbil/addzone.html', {'form': form})
 
 
+@login_required
+def add_CSB_data(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            import_csb_data(request.FILES['file'])
+
+    else:
+        form = UploadFileForm()
+    return render(request, 'nbil/addCSB.html', {'form': form})

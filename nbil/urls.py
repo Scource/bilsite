@@ -19,6 +19,7 @@ urlpatterns = [
 
     path('tariff/', views.add_tariff, name='tariff'),
     path('zone/', views.add_zone, name='zone'),
+    path('CSB_import/', views.add_CSB_data, name='CSB_import'),
 
 
 ]

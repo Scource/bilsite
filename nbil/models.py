@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models import Count
 
 
 class tariff_data(models.Model):
@@ -276,12 +277,18 @@ class CSB_data(models.Model):
 
 class CSB_raw(models.Model):
 	PPE_number=models.CharField(max_length=40)
+	SE_name=models.CharField(max_length=60)
+	SE_code=models.CharField(max_length=40)
+	tariff=models.CharField(max_length=5, default='BRAK SPRZEDAWCY')
 	sell_DT=models.DateField()
 	invoice_DT_from=models.DateField()
 	invoice_DT_to=models.DateField()
-	volume=models.FloatField()
 	zone_1=models.FloatField()
 	zone_2=models.FloatField()
 	zone_3=models.FloatField()
-	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
-	DT_modify=models.DateField(auto_now=True)
+	doc_numer=models.CharField(max_length=40, default='brak numeru')
+	DT_create=models.DateField(auto_now=True)
+
+	@classmethod
+	def save_data(cls, deff):
+		CSB_raw.objects.bulk_create(deff)

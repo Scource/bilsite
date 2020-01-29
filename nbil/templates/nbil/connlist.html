@@ -32,7 +32,11 @@
 			<td>{{l.DT_create}}</td>
 			<td><a class="btn btn-primary btn-sm" href="{% url 'nbil:connedit' l.id %}" role="button">Edytuj</a></td>
 		</tr>
+	{% empty %}
+		<p>as</p>
+
 	{%endfor%}
+	
 
 
 </table>

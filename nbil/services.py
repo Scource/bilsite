@@ -1,4 +1,4 @@
-from .models import tariff_data, zone_data
+from .models import tariff_data, zone_data, CSB_raw
 import pandas as pd
 import numpy as np
 
@@ -49,3 +49,40 @@ def import_ELZ(file):
 				new={'hour_'+str(g):row[g]}
 				hourly_data.update(new)
 			zone_data.save_file(hourly_data, date, zone_schemas)
+
+
+def import_csb_data(file):
+	xls_file=pd.ExcelFile(file)
+	sheet=pd.read_excel(xls_file)
+
+	sheets_to_del=['Lp.', 'Rodzaj_dokumentu', 'Typ_rozliczenia', 'Ilość']
+	for d in sheets_to_del:
+		del sheet[d]
+
+	change_format=['Data_sprz', 'Data_od', 'Data_do']
+	for c in change_format:
+		sheet[c]=pd.to_datetime(sheet[c], format='%Y-%m-%d')
+
+	lissss=[]
+	doc_no_list=[]
+	ppenr_list=[]
+	for index, row in sheet.iterrows():
+		a= CSB_raw(PPE_number=row['Nr_PPE'],
+			SE_name=row['Sprzedawca'],
+			SE_code=row['Kod_MDD'],
+			tariff=row['Taryfa'],
+			doc_numer=row['Numer_dokumentu'],
+			sell_DT=row['Data_sprz'],
+			invoice_DT_from=row['Data_od'],
+			invoice_DT_to=row['Data_do'],
+			zone_1=row['Strefa_1'],
+			zone_2=row['Strefa_2'],
+			zone_3=row['Strefa_3'])
+
+		lissss.append(a)
+	CSB_raw.save_data(lissss)
+
+	
+
+
+
