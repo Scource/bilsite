@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from .models import UR_objects, UR_conn
 from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create, UploadFileForm
 from .filters import URFilter, ConnFilter
-from .services import import_ELZ, import_ELP, import_csb_data
+from .services import import_ELZ, import_ELP, import_csb_data, CSB_decompose
 
 
 def index(request):
@@ -127,11 +127,13 @@ def add_zone(request):
 
 @login_required
 def add_CSB_data(request):
+	
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             import_csb_data(request.FILES['file'])
-
+            CSB_decompose()
     else:
         form = UploadFileForm()
-    return render(request, 'nbil/addCSB.html', {'form': form})
+
+    return render(request, 'nbil/addCSB.html', {'form': form, 'func':func})

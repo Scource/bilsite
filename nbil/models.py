@@ -286,6 +286,7 @@ class CSB_raw(models.Model):
 	zone_1=models.FloatField()
 	zone_2=models.FloatField()
 	zone_3=models.FloatField()
+	decomposed=models.IntegerField(default=0)
 	doc_numer=models.CharField(max_length=40, default='brak numeru')
 	DT_create=models.DateField(auto_now=True)
 
