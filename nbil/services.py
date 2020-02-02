@@ -91,22 +91,22 @@ def CSB_decompose():
 
 	
 	#Cget CSB data from model wehre flag=0
-	CSBdata=CSB_raw.objects.filter(decomposed=0)
+	CSBdata=CSB_raw.objects.values().filter(decomposed=0)
 	CSBdf=pd.DataFrame.from_records(CSBdata)
 
 
 	#get max and min date from CSBdata and get those from prof and zones + change on pandas
-	dmin = CSBdata.order_by('invoice_DT_from').first().values('invoice_DT_from')
-	dmax = CSBdata.order_by('invoice_DT_to').last().values('invoice_DT_to')
-
-	prof_data=pd.DataFrame.from_records(tariff_data.objects.filter(tarrif_date__gte=dmin, tarrif_date__lte=dmax).order_by('tarrif_date'))
-	zone_data=pd.DataFrame.from_records(zone_data.objects.filter(zone_date__gte=dmin, zone_date__lte=dmax).order_by('zone_date'))
+	dmin = (CSBdata.order_by('invoice_DT_from').values('invoice_DT_from').first()).get('invoice_DT_from')
+	dmax = (CSBdata.order_by('invoice_DT_to').values('invoice_DT_to').last()).get('invoice_DT_to')
+	
+	prof_data=pd.DataFrame(tariff_data.objects.values().order_by('tariff_date').filter(tariff_date__gte=dmin, tariff_date__lte=dmax))
+	stref_data=pd.DataFrame(zone_data.objects.values().order_by('zone_date').filter(zone_date__gte=dmin, zone_date__lte=dmax))
 
 
 	#for every in CSBlist:
 	for index, row in CSBdf.iterrows():	
 
-		if row['tariff'][0] in tar_list:
+		if row['tariff'] in tar_list[0]:
 
 			# PPE_taryfa=row['tariff']
 			# new_from=row['invoice_DT_from']
@@ -114,10 +114,10 @@ def CSB_decompose():
 			# PPE_EC0=row['zone_1']
 			# PPE_EC1=row['zone_2']
 
-			temp_profiles=prof_data[(prof_data.tarrif_date >= row['invoice_DT_from']) & (prof_data.tarrif_date <=row['invoice_DT_to'])]
-			temp_zones=zone_data[(zone_data.zone_date >= row['invoice_DT_from']) & (zone_data.zone_date <=row['invoice_DT_to'])]
-			temp_profiles=temp_profiles['tarrif_schemas']=row['tariff']
-			temp_zones=temp_zones['zone_schemas']=row['tariff']
+			temp_profiles_all=prof_data[(prof_data.tariff_date >= row['invoice_DT_from']) & (prof_data.tariff_date <=row['invoice_DT_to'])]
+			temp_zones_all=stref_data[(stref_data.zone_date >= row['invoice_DT_from']) & (stref_data.zone_date <=row['invoice_DT_to'])]
+			temp_profiles=temp_profiles_all[temp_profiles_all['tariff_schemas']==row['tariff']]
+			temp_zones=temp_zones_all[temp_zones_all['zone_schemas']==row['tariff']]
 			
 			EC0_count_prof_h=0
 			EC1_count_prof_h=0
@@ -129,6 +129,8 @@ def CSB_decompose():
 			del temp_zones['id']
 			del temp_zones['zone_schemas']
 
+			temp_profiles.set_index('tariff_date', inplace=True)
+			temp_zones.set_index('zone_date', inplace=True)
 
 			zone_change=temp_zones.replace({0: 1, 1: 0})
 			prof_change_0=temp_profiles.multiply(zone_change, fill_value=0)
@@ -144,31 +146,18 @@ def CSB_decompose():
 
 			temp_profiles['sum']=temp_profiles.sum(axis=1)
 
+
+			# CREATE FUNCTION TO MAKE dicts or objects to insert to DB
+			#then split on new and existing rows
+
 			for index, line in temp_profiles.iterrows():
-				row['PPE_number']
-				line['tariff_date'].month
-				line['tariff_date'].year
-
-
-
-																						#get from & to data + tariff for this invoice
-
-																						#if tarr in tarr_list
-
-																							#zones_change get 0->1, 1->0
-
-																							#str=0 prof multiply by zones_changed
-																							#str=1 prof multiply by zones normal
-
-																							#sum str0 and str1
-
-																							#str0*zone0 /sum str0     TABLE 
-																							#str1*zone1 /sum str1     TABLE
-
-																							#add tables
-
-			#sum to days
-
+				PPE=row['PPE_number']
+				year=index.year
+				month=index.month
+				for g in range (1,25):
+					new={'hour_'+str(g):row[g]}
+					hourly_data.update(new)
+				tariff_data.save_file(PPE, date, tariff_schemas)
 
 
 

@@ -136,4 +136,4 @@ def add_CSB_data(request):
     else:
         form = UploadFileForm()
 
-    return render(request, 'nbil/addCSB.html', {'form': form, 'func':func})
+    return render(request, 'nbil/addCSB.html', {'form': form})

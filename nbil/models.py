@@ -206,7 +206,8 @@ class CSPR_data(models.Model):
 
 class CSB_data(models.Model):
 	PPE_number=models.CharField(max_length=40)
-	month_date=models.DateField()
+	year_date=models.IntegerField(default=1999)
+	month_date=models.IntegerField(default=1)
 	value_d1=models.FloatField(null=True)
 	value_d2=models.FloatField(null=True)
 	value_d3=models.FloatField(null=True)
