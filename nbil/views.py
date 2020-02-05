@@ -127,12 +127,13 @@ def add_zone(request):
 
 @login_required
 def add_CSB_data(request):
-	
+    aa = request.user
+    #zz=current_user.id
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             import_csb_data(request.FILES['file'])
-            CSB_decompose()
+            CSB_decompose(aa)
     else:
         form = UploadFileForm()
 

@@ -1,6 +1,7 @@
-from .models import tariff_data, zone_data, CSB_raw
+from .models import tariff_data, zone_data, CSB_raw, CSB_data, UR_objects
 import pandas as pd
 import numpy as np
+
 
 
 #tutaj classa do wycigania danych z xlsa i obrobienia na dane do modelu
@@ -84,7 +85,7 @@ def import_csb_data(file):
 
 
 
-def CSB_decompose():
+def CSB_decompose(aa):
 
 	# tarr_list =get distinct tarrifs from profiles
 	tar_list=CSB_raw.objects.values_list('tariff').distinct()
@@ -150,19 +151,27 @@ def CSB_decompose():
 			# CREATE FUNCTION TO MAKE dicts or objects to insert to DB
 			#then split on new and existing rows
 
+			#https://stackoverflow.com/questions/52024039/how-to-use-update-or-create-and-f-to-create-a-new-record-in-django
+			# F EXpression
+
+
 			for index, line in temp_profiles.iterrows():
-				PPE=row['PPE_number']
+
+				
+
+				SE=UR_objects.objects.get(id=1)
+				object_data={'value_d'+str(index.day):line['sum'], 'tariff_d'+str(index.day):row['tariff'], 'SE_name':SE, 'user_id':aa}
+				ppe=row['PPE_number']
 				year=index.year
 				month=index.month
-				for g in range (1,25):
-					new={'hour_'+str(g):row[g]}
-					hourly_data.update(new)
-				tariff_data.save_file(PPE, date, tariff_schemas)
-
+				CSB_data.save_obj(ppe, year, month, object_data)
 
 
 		else:
 			pass
+
+
+
 
 			#get number of days in invoice period
 			#sum all zones:
