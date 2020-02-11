@@ -78,9 +78,24 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'SKOME_TEST': {
+        'NAME': 'skome',
+        'ENGINE': 'django.db.backends.oracle',        
+        'USER': 'tomwal',
+        'PASSWORD': '09ToWaTW54',
+        # 'HOST': '10.6.5.222',
+        # 'PORT': '1521',
+
+        # 'skome': {
+        # 'NAME': '10.6.5.222:1521/SKOME',
+        # 'ENGINE': 'django.db.backends.oracle',
+        # 'USER': 'tomwal',
+        # 'PASSWORD': '09ToWaTW54'
     }
 }
 
+#DATABASE_ROUTERS = ['nbil.routers.NbilRouter',]
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -127,3 +142,5 @@ STATICFILES_DIR = [
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/'
+
+

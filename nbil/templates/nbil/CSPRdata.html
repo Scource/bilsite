@@ -1,0 +1,22 @@
+{% extends "nbil/base_generic.html" %}
+{% block content %}
+
+
+<h1>Lista POB</h1>
+	<table class="table">
+		<tr>
+			<th>ID</th>
+			<th>name</th>
+		{% for pob in listaa %}
+		</tr>
+		<tr>
+			{% for el in pob %}
+			<td>{{el}}</td>
+
+			{% endfor %}	
+		{% endfor %}	
+		</tr>
+	</table>
+
+{% endblock %}
+

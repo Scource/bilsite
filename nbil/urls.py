@@ -20,6 +20,7 @@ urlpatterns = [
     path('tariff/', views.add_tariff, name='tariff'),
     path('zone/', views.add_zone, name='zone'),
     path('CSB_import/', views.add_CSB_data, name='CSB_import'),
+    path('CSPR_data/', views.get_skome_data, name='CSPRdata'),
 
 
 ]

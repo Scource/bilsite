@@ -149,7 +149,7 @@ def CSB_decompose(user_data):
 	#get list of all tarrifs in db table
 	tar_list=get_tariff_list()
 	
-	#Cget CSB data from model wehre flag=0
+	#get CSB data from model wehre flag=0
 	CSBdata=CSB_raw.objects.values().filter(decomposed=0)
 	if CSBdata.count()>0:
 		CSBdf=pd.DataFrame.from_records(CSBdata)

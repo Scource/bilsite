@@ -9,6 +9,8 @@ from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create, Uplo
 from .filters import URFilter, ConnFilter
 from .services import import_ELZ, import_ELP, import_csb_data, CSB_decompose
 
+import cx_Oracle
+
 
 def index(request):
 	ob_list = UR_objects.objects.all()[:6]
@@ -127,14 +129,30 @@ def add_zone(request):
 
 @login_required
 def add_CSB_data(request):
-    aa = request.user
+    user_data = request.user
     #zz=current_user.id
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             import_csb_data(request.FILES['file'])
-            CSB_decompose(aa)
+            CSB_decompose(user_data)
     else:
         form = UploadFileForm()
 
     return render(request, 'nbil/addCSB.html', {'form': form})
+
+
+@login_required
+def get_skome_data(request):
+	#listaa=I_COMPANY.objects.using('SKOME_TEST').all()
+	conn=cx_Oracle.connect('tomwal/09ToWaTW54@10.6.5.222:1521/skome')
+	try:
+		c=conn.cursor()
+		c.execute('SELECT I_COMPANY_ID, I_OR_CODE, I_COMPANY_NAME FROM I_COMPANY ORDER BY I_COMPANY_ID')
+		listaa=c.fetchall()
+
+	finally:
+		conn.close()
+
+	context={'listaa':listaa}
+	return render(request, 'nbil/CSPRdata.html', context)

@@ -302,3 +302,4 @@ class CSB_raw(models.Model):
 	@classmethod
 	def save_data(cls, deff):
 		CSB_raw.objects.bulk_create(deff)
+
