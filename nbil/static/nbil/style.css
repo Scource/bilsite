@@ -50,6 +50,11 @@ clear: both;
 }
 
 
+
+.table-condensed{
+  font-size: 8px;
+}
+
 /** {
 margin: 0;
 padding: 0;
