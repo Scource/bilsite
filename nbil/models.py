@@ -105,7 +105,8 @@ class UR_conn(models.Model):
 
 class CSPR_data(models.Model):
 	PPE_number=models.CharField(max_length=40)
-	month_date=models.DateField()
+	month_date=models.IntegerField()
+	year_date=models.IntegerField()
 	value_d1=models.FloatField(null=True)
 	value_d2=models.FloatField(null=True)
 	value_d3=models.FloatField(null=True)
@@ -137,37 +138,37 @@ class CSPR_data(models.Model):
 	value_d29=models.FloatField(null=True)
 	value_d30=models.FloatField(null=True)
 	value_d31=models.FloatField(null=True)
-	status_d1=models.FloatField(null=True)
-	status_d2=models.FloatField(null=True)
-	status_d3=models.FloatField(null=True)
-	status_d4=models.FloatField(null=True)
-	status_d5=models.FloatField(null=True)
-	status_d6=models.FloatField(null=True)
-	status_d7=models.FloatField(null=True)
-	status_d8=models.FloatField(null=True)
-	status_d9=models.FloatField(null=True)
-	status_d10=models.FloatField(null=True)
-	status_d11=models.FloatField(null=True)
-	status_d12=models.FloatField(null=True)
-	status_d13=models.FloatField(null=True)
-	status_d14=models.FloatField(null=True)
-	status_d15=models.FloatField(null=True)
-	status_d16=models.FloatField(null=True)
-	status_d17=models.FloatField(null=True)
-	status_d18=models.FloatField(null=True)
-	status_d19=models.FloatField(null=True)
-	status_d20=models.FloatField(null=True)
-	status_d21=models.FloatField(null=True)
-	status_d22=models.FloatField(null=True)
-	status_d23=models.FloatField(null=True)
-	status_d24=models.FloatField(null=True)
-	status_d25=models.FloatField(null=True)
-	status_d26=models.FloatField(null=True)
-	status_d27=models.FloatField(null=True)
-	status_d28=models.FloatField(null=True)
-	status_d29=models.FloatField(null=True)
-	status_d30=models.FloatField(null=True)
-	status_d31=models.FloatField(null=True)
+	status_d1=models.IntegerField(null=True)
+	status_d2=models.IntegerField(null=True)
+	status_d3=models.IntegerField(null=True)
+	status_d4=models.IntegerField(null=True)
+	status_d5=models.IntegerField(null=True)
+	status_d6=models.IntegerField(null=True)
+	status_d7=models.IntegerField(null=True)
+	status_d8=models.IntegerField(null=True)
+	status_d9=models.IntegerField(null=True)
+	status_d10=models.IntegerField(null=True)
+	status_d11=models.IntegerField(null=True)
+	status_d12=models.IntegerField(null=True)
+	status_d13=models.IntegerField(null=True)
+	status_d14=models.IntegerField(null=True)
+	status_d15=models.IntegerField(null=True)
+	status_d16=models.IntegerField(null=True)
+	status_d17=models.IntegerField(null=True)
+	status_d18=models.IntegerField(null=True)
+	status_d19=models.IntegerField(null=True)
+	status_d20=models.IntegerField(null=True)
+	status_d21=models.IntegerField(null=True)
+	status_d22=models.IntegerField(null=True)
+	status_d23=models.IntegerField(null=True)
+	status_d24=models.IntegerField(null=True)
+	status_d25=models.IntegerField(null=True)
+	status_d26=models.IntegerField(null=True)
+	status_d27=models.IntegerField(null=True)
+	status_d28=models.IntegerField(null=True)
+	status_d29=models.IntegerField(null=True)
+	status_d30=models.IntegerField(null=True)
+	status_d31=models.IntegerField(null=True)
 	tariff_d1=models.CharField(max_length=6, null=True)
 	tariff_d2=models.CharField(max_length=6, null=True)
 	tariff_d3=models.CharField(max_length=6, null=True)
@@ -199,10 +200,14 @@ class CSPR_data(models.Model):
 	tariff_d29=models.CharField(max_length=6, null=True)
 	tariff_d30=models.CharField(max_length=6, null=True)
 	tariff_d31=models.CharField(max_length=6, null=True)
-	direction=models.IntegerField()
-	conn_UR=models.ForeignKey(UR_conn, on_delete=models.PROTECT)
+	SE=models.CharField(max_length=30)
 	user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET('deleted'))
 	DT_modify=models.DateField(auto_now=True)
+
+
+	@classmethod
+	def save_cspr_obj(cls, ppe, year, month, obj):
+		CSPR_data.objects.update_or_create(defaults=obj, PPE_number=ppe, year_date=year, month_date=month)
 
 class CSB_data(models.Model):
 	PPE_number=models.CharField(max_length=40)
@@ -276,9 +281,9 @@ class CSB_data(models.Model):
 
 
 	@classmethod
-	def save_obj(cls, ppe, year, month, obj):
+	def save_obj(cls, PPE, year, month, SE, obj):
 		CSB_data.objects.update_or_create( 
-			defaults=obj, PPE_number=ppe, year_date=year, month_date=month)
+			defaults=obj, PPE_number=PPE, year_date=year, month_date=month, SE_name=SE)
 
 	@classmethod
 	def save_data(cls, deff):

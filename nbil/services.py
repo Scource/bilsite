@@ -1,7 +1,8 @@
-from .models import tariff_data, zone_data, CSB_raw, CSB_data, UR_objects
+from .models import tariff_data, zone_data, CSB_raw, CSB_data, UR_objects, CSPR_data
 import pandas as pd
 import numpy as np
 from django.db.models import Count, F, Value
+import cx_Oracle
 
 
 
@@ -69,7 +70,7 @@ def import_csb_data(file):
 	for index, row in sheet.iterrows():
 
 
-		if CSB_raw.objects.filter(PPE_number=row['Nr_PPE'], SE_code=row['Kod_MDD'], doc_numer=row['Numer_dokumentu']).exists():
+		if CSB_raw.objects.filter(PPE_number=row['Nr_PPE'], SE_code=row['Kod_MDD'], doc_numer=row['Numer_dokumentu'], sell_DT=row['Data_sprz']).exists():
 			pass
 		else:
 			a= CSB_raw(PPE_number=row['Nr_PPE'],
@@ -170,79 +171,49 @@ def CSB_decompose(user_data):
 		CSBdata.update(decomposed=1)
 
 
-	#get max and min date from CSBdata and get those from prof and zones + change on pandas
-	#dmin = (CSBdata.order_by('invoice_DT_from').values('invoice_DT_from').first()).get('invoice_DT_from')
-	#dmax = (CSBdata.order_by('invoice_DT_to').values('invoice_DT_to').last()).get('invoice_DT_to')
-	
+def fetch_cspr_data():
+	conn=cx_Oracle.connect('tomwal/09ToWaTW54@10.6.5.222:1521/skome')
+	try:
+		query="""SELECT FORMULA.I_MB_PPE AS "PPE", EXTRACT(month FROM ENERGY100_A.I_DATETIME) "month", EXTRACT(year FROM ENERGY100_A.I_DATETIME) "year", EXTRACT(day FROM ENERGY100_A.I_DATETIME) "day", 
+			I_ENERGY_CADO as "ener", I_STATUS_CADO as "status", I_TARIFF_SCHEMA.I_NAME as "tariff", I_COMPANY.I_OR_CODE as "MDD_code"
+			FROM ENERGY100_A 
+			INNER JOIN FORMULA ON FORMULA.I_ECPP_FID=ENERGY100_A.I_FORMULA_ID
+			inner join I_COMPANY ON I_COMPANY.I_COMPANY_ID=ENERGY100_A.I_SE_ID
+			INNER JOIN I_TARIFF_SCHEMA ON I_TARIFF_SCHEMA.I_TARIFF_SCHEMA_ID=ENERGY100_A.I_TARIFF_SCHEMA_ID
+			# here add BETWEEN DATA
+			WHERE ENERGY100_A.I_DATETIME=TO_DATE('2017-01-01','YYYY-MM-DD')
+			AND I_SE_ID IN (SELECT I_COMPANY_ID FROM  I_COMPANY WHERE I_OR_CODE NOT LIKE '%EPSA%' AND I_OR_CODE NOT LIKE '%ENEA%' AND I_OR_CODE NOT LIKE '%ENOP%' AND I_COMPANY_ID!=1)"""
+		
+		cspr_df = pd.read_sql(query, con=conn)
+		
+
+	finally:
+		conn.close()
+
+	return cspr_df
 
 
-	#HERE TO START 
-	#for every in CSBlist:
+def save_cspr_data(cspr, user_data):
 
-
-			# temp_profiles_all=prof_data[(prof_data.tariff_date >= row['invoice_DT_from']) & (prof_data.tariff_date <=row['invoice_DT_to'])]
-			# temp_zones_all=stref_data[(stref_data.zone_date >= row['invoice_DT_from']) & (stref_data.zone_date <=row['invoice_DT_to'])]
-			# temp_profiles=temp_profiles_all[temp_profiles_all['tariff_schemas']==row['tariff']]
-			# temp_zones=temp_zones_all[temp_zones_all['zone_schemas']==row['tariff']]
-			
-			# EC0_count_prof_h=0
-			# EC1_count_prof_h=0
-
-			# del temp_profiles['id']
-			# del temp_profiles['tariff_schemas']
-			# del temp_zones['id']
-			# del temp_zones['zone_schemas']
-
-			# temp_profiles.set_index('tariff_date', inplace=True)
-			# temp_zones.set_index('zone_date', inplace=True)
-
-			# zone_change=temp_zones.replace({0: 1, 1: 0})
-			# prof_change_0=temp_profiles.multiply(zone_change, fill_value=0)
-			# prof_change_1=temp_profiles.multiply(temp_zones, fill_value=0)
-
-			# prof_change_0_sum=(prof_change_0.sum()).sum()
-			# prof_change_1_sum=(prof_change_1.sum()).sum()
-
-
-			# temp_profiles_0=(prof_change_0*row['zone_1'])/prof_change_0_sum
-			# temp_profiles_1=(prof_change_1*row['zone_2'])/prof_change_1_sum
-			# temp_profiles = temp_profiles_0.add(temp_profiles_1, fill_value=0)
-
-			# temp_profiles['sum']=temp_profiles.sum(axis=1)
-
-
-			# # CREATE FUNCTION TO MAKE dicts or objects to insert to DB
-			# #then split on new and existing rows
-
-			# #https://stackoverflow.com/questions/52024039/how-to-use-update-or-create-and-f-to-create-a-new-record-in-django
-			# # F EXpression
-
-			
-			# for index, line in temp_profiles.iterrows():
-			# 	SE=UR_objects.objects.get(code=row['SE_code'], is_pob=1)		
-			# 	year=index.year
-			# 	month=index.month
-			# 	ppe=row['PPE_number']
-
-			# 	fetched = CSB_data.objects.get_or_create(PPE_number=ppe, month_date=index.month, year_date=index.year, SE_name=SE, user_id=user_data)
-
-			# 	if fetched:
-			# 		object_data={'value_d'+str(index.day): F('value_d'+str(index.day))+line['sum'], 'tariff_d'+str(index.day):row['tariff'], 'SE_name':SE, 'user_id':user_data}					
-			# 		CSB_data.save_obj(ppe, year, month, object_data)
 	
 
 
 
-			#get number of days in invoice period
-			#sum all zones:
-			#divide sum by number of days
+# wyciagnąć dane dla wszystkich dni z zakresu i dodać kolumny w dataframie
+#potem podział na te które sa i ich nie ma
+#bulk insert dla nieistniejacych
+#update dla pozostałych
+	for index, row in cspr.iterrows():
+		month=row['month']
+		year=row['year']
+		PPE=row['PPE']
+		SE=row['MDD_code']
+		object_data={'value_d'+str(row['day']): row['ener'], 'status_d'+str(row['day']): row['status'], 
+			'tariff_d'+str(row['day']):row['tariff'], 'SE':row['MDD_code'], 'user':user_data}	
+
+		CSPR_data.save_cspr_obj(PPE, year, month, SE, object_data)
 
 
-
-		#check if PPE + month+year exists in tabkle
-			#if true:
-				#update object
-			#else:
-				#create objects and add
-
-		#bulk create objects
+def cspr_handle(user_data):
+	fetched=fetch_cspr_data()
+	save_cspr_data(fetched, user_data)

@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from .models import UR_objects, UR_conn
 from .forms import Conn_form, UR_edit_form, conn_edit_form, UR_form_create, UploadFileForm
 from .filters import URFilter, ConnFilter
-from .services import import_ELZ, import_ELP, import_csb_data, CSB_decompose
+from .services import import_ELZ, import_ELP, import_csb_data, CSB_decompose, cspr_handle
 
 import cx_Oracle
 
@@ -144,15 +144,7 @@ def add_CSB_data(request):
 
 @login_required
 def get_skome_data(request):
-	#listaa=I_COMPANY.objects.using('SKOME_TEST').all()
-	conn=cx_Oracle.connect('tomwal/09ToWaTW54@10.6.5.222:1521/skome')
-	try:
-		c=conn.cursor()
-		c.execute('SELECT I_COMPANY_ID, I_OR_CODE, I_COMPANY_NAME FROM I_COMPANY ORDER BY I_COMPANY_ID')
-		listaa=c.fetchall()
+	user_data = request.user
+	cspr_handle(user_data)
 
-	finally:
-		conn.close()
-
-	context={'listaa':listaa}
-	return render(request, 'nbil/CSPRdata.html', context)
+	return render(request, 'nbil/CSPRdata.html')

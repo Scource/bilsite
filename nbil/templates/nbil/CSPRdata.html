@@ -1,22 +1,11 @@
 {% extends "nbil/base_generic.html" %}
 {% block content %}
 
+<!-- 
+<form action="{% url 'downloadexcel' %}" method="post">
+{% csrf_token %}
 
-<h1>Lista POB</h1>
-	<table class="table-condensed">
-		<tr>
-			<th>ID</th>
-			<th>name</th>
-		{% for pob in listaa %}
-		</tr>
-		<tr>
-			{% for el in pob %}
-			<td>{{el}}</td>
 
-			{% endfor %}	
-		{% endfor %}	
-		</tr>
-	</table>
-
-{% endblock %}
-
+ <button type="submit" name='mybtn2' value={{excel_path}}>get data</button>
+ </form>
+ -->
