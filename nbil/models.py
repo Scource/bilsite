@@ -206,8 +206,8 @@ class CSPR_data(models.Model):
 
 
 	@classmethod
-	def save_cspr_obj(cls, ppe, year, month, obj):
-		CSPR_data.objects.update_or_create(defaults=obj, PPE_number=ppe, year_date=year, month_date=month)
+	def save_cspr_obj(cls, ppe, year, month, SE, obj):
+		CSPR_data.objects.update_or_create(defaults=obj, PPE_number=ppe, year_date=year, month_date=month, SE=SE)
 
 class CSB_data(models.Model):
 	PPE_number=models.CharField(max_length=40)

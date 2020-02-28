@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from django.db.models import Count, F, Value
 import cx_Oracle
-
+from datetime import datetime, date, timedelta
 
 
 #tutaj classa do wycigania danych z xlsa i obrobienia na dane do modelu
@@ -173,43 +173,61 @@ def CSB_decompose(user_data):
 
 def fetch_cspr_data():
 	conn=cx_Oracle.connect('tomwal/09ToWaTW54@10.6.5.222:1521/skome')
-	try:
-		query="""SELECT FORMULA.I_MB_PPE AS "PPE", EXTRACT(month FROM ENERGY100_A.I_DATETIME) "month", EXTRACT(year FROM ENERGY100_A.I_DATETIME) "year", EXTRACT(day FROM ENERGY100_A.I_DATETIME) "day", 
-			I_ENERGY_CADO as "ener", I_STATUS_CADO as "status", I_TARIFF_SCHEMA.I_NAME as "tariff", I_COMPANY.I_OR_CODE as "MDD_code"
-			FROM ENERGY100_A 
-			INNER JOIN FORMULA ON FORMULA.I_ECPP_FID=ENERGY100_A.I_FORMULA_ID
-			inner join I_COMPANY ON I_COMPANY.I_COMPANY_ID=ENERGY100_A.I_SE_ID
-			INNER JOIN I_TARIFF_SCHEMA ON I_TARIFF_SCHEMA.I_TARIFF_SCHEMA_ID=ENERGY100_A.I_TARIFF_SCHEMA_ID
-			# here add BETWEEN DATA
-			WHERE ENERGY100_A.I_DATETIME=TO_DATE('2017-01-01','YYYY-MM-DD')
-			AND I_SE_ID IN (SELECT I_COMPANY_ID FROM  I_COMPANY WHERE I_OR_CODE NOT LIKE '%EPSA%' AND I_OR_CODE NOT LIKE '%ENEA%' AND I_OR_CODE NOT LIKE '%ENOP%' AND I_COMPANY_ID!=1)"""
-		
-		cspr_df = pd.read_sql(query, con=conn)
-		
+	result=pd.DataFrame(columns=['PPE', "MDD_code", 'year', 'month'])
 
-	finally:
+	sdate = date(2017, 2, 1)
+	edate = date(2017, 3, 2)
+	delta = edate - sdate
+
+	try:
+		for i in (range(delta.days + 1)):
+			d=sdate + timedelta(days=i)
+
+			day_only=int(d.strftime('%d'))
+		
+			query="""SELECT FORMULA.I_MB_PPE AS "PPE", EXTRACT(month FROM ENERGY100_A.I_DATETIME) "month", EXTRACT(year FROM ENERGY100_A.I_DATETIME) "year",
+				I_ENERGY_CADO as "ener{suff}", I_STATUS_CADO as "status{suff}", I_TARIFF_SCHEMA.I_NAME as "tariff{suff}", I_COMPANY.I_OR_CODE as "MDD_code"
+				FROM ENERGY100_A 
+				INNER JOIN FORMULA ON FORMULA.I_ECPP_FID=ENERGY100_A.I_FORMULA_ID
+				inner join I_COMPANY ON I_COMPANY.I_COMPANY_ID=ENERGY100_A.I_SE_ID
+				INNER JOIN I_TARIFF_SCHEMA ON I_TARIFF_SCHEMA.I_TARIFF_SCHEMA_ID=ENERGY100_A.I_TARIFF_SCHEMA_ID
+				WHERE ENERGY100_A.I_DATETIME = TO_DATE('{day}','YYYY-MM-DD')
+				AND I_SE_ID =8460""".format(day=d, suff='_'+str(day_only))
+			
+			cspr_df = pd.read_sql(query, con=conn)
+			
+			result = pd.merge(result, cspr_df, how='outer', on=['PPE', 'MDD_code', 'year', 'month'])
+			# NAN PROBLEMS !!!!!!!!!!!!!!!!!!!
+	finally:			
 		conn.close()
 
-	return cspr_df
-
+	return result
+	# EXTRACT(day FROM ENERGY100_A.I_DATETIME) "day", 
 
 def save_cspr_data(cspr, user_data):
 
 	
+# wyciagnąć dane dla wszystkich dni z zakresu i dodać kolumny w dataframie - done
 
 
-
-# wyciagnąć dane dla wszystkich dni z zakresu i dodać kolumny w dataframie
 #potem podział na te które sa i ich nie ma
 #bulk insert dla nieistniejacych
-#update dla pozostałych
+
+#update dla pozostałych  - zrobione tylko pod cspr podstawić te które są
+	object_data={}
+	one_day_dict={}
 	for index, row in cspr.iterrows():
 		month=row['month']
 		year=row['year']
 		PPE=row['PPE']
 		SE=row['MDD_code']
-		object_data={'value_d'+str(row['day']): row['ener'], 'status_d'+str(row['day']): row['status'], 
-			'tariff_d'+str(row['day']):row['tariff'], 'SE':row['MDD_code'], 'user':user_data}	
+		for g in range (1,32):
+			try:
+				one_day_dict={'value_d'+str(g): row['ener_'+str(g)], 'status_d'+str(g): row['status_'+str(g)], 
+				'tariff_d'+str(g):row['tariff_'+str(g)], 'SE':row['MDD_code'], 'user':user_data}
+			except KeyError:
+				pass
+			object_data.update(one_day_dict)
 
 		CSPR_data.save_cspr_obj(PPE, year, month, SE, object_data)
 
