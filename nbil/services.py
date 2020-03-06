@@ -176,7 +176,7 @@ def fetch_cspr_data():
 	result=pd.DataFrame(columns=['PPE', "MDD_code", 'year', 'month'])
 
 	sdate = date(2017, 2, 1)
-	edate = date(2017, 3, 2)
+	edate = date(2017, 2, 28)
 	delta = edate - sdate
 
 	try:
@@ -197,31 +197,25 @@ def fetch_cspr_data():
 			cspr_df = pd.read_sql(query, con=conn)
 			
 			result = pd.merge(result, cspr_df, how='outer', on=['PPE', 'MDD_code', 'year', 'month'])
-			# NAN PROBLEMS !!!!!!!!!!!!!!!!!!!
+			result = result.where(pd.notnull(result), None)
+			# NAN PROBLEMS !!!!!! CZY DZIAŁA CHUJ WIE?!?!
 	finally:			
 		conn.close()
 
-	return result
+	return result, delta
 	# EXTRACT(day FROM ENERGY100_A.I_DATETIME) "day", 
 
-def save_cspr_data(cspr, user_data):
+def save_cspr_data(cspr, days_count, user_data):
 
-	
-# wyciagnąć dane dla wszystkich dni z zakresu i dodać kolumny w dataframie - done
-
-
-#potem podział na te które sa i ich nie ma
-#bulk insert dla nieistniejacych
-
-#update dla pozostałych  - zrobione tylko pod cspr podstawić te które są
 	object_data={}
 	one_day_dict={}
-	for index, row in cspr.iterrows():
+	list_of_objects=[]
+	for index, row in cspr.iterrows():		
 		month=row['month']
 		year=row['year']
 		PPE=row['PPE']
 		SE=row['MDD_code']
-		for g in range (1,32):
+		for g in range (1,32): ##problem z zakresem żeby brał tyle dni ile jest w datach od do!!!!!!!!!
 			try:
 				one_day_dict={'value_d'+str(g): row['ener_'+str(g)], 'status_d'+str(g): row['status_'+str(g)], 
 				'tariff_d'+str(g):row['tariff_'+str(g)], 'SE':row['MDD_code'], 'user':user_data}
@@ -229,9 +223,47 @@ def save_cspr_data(cspr, user_data):
 				pass
 			object_data.update(one_day_dict)
 
-		CSPR_data.save_cspr_obj(PPE, year, month, SE, object_data)
+		if CSPR_data.objects.filter(PPE_number=row['PPE'], SE=row['MDD_code'], month_date=row['month'], year_date=row['year']).exists():
+			CSPR_data.save_cspr_obj(PPE, year, month, SE, object_data)
+
+		else:
+			new_object=CSPR_data(month_date=row['month'], year_date=row['year'], PPE_number=row['PPE'], **object_data)
+			newaaa=new_object.month_date
+			list_of_objects.append(new_object)
+
+	CSPR_data.save_data(list_of_objects)
+
+
+
+
+
+
+
+# # wyciagnąć dane dla wszystkich dni z zakresu i dodać kolumny w dataframie - done
+
+
+# #potem podział na te które sa i ich nie ma
+# #bulk insert dla nieistniejacych
+
+# #update dla pozostałych  - zrobione tylko pod cspr podstawić te które są
+# 	object_data={}
+# 	one_day_dict={}
+# 	for index, row in cspr.iterrows():
+# 		month=row['month']
+# 		year=row['year']
+# 		PPE=row['PPE']
+# 		SE=row['MDD_code']
+# 		for g in range (1,32):
+# 			try:
+# 				one_day_dict={'value_d'+str(g): row['ener_'+str(g)], 'status_d'+str(g): row['status_'+str(g)], 
+# 				'tariff_d'+str(g):row['tariff_'+str(g)], 'SE':row['MDD_code'], 'user':user_data}
+# 			except KeyError:
+# 				pass
+# 			object_data.update(one_day_dict)
+
+# 		CSPR_data.save_cspr_obj(PPE, year, month, SE, object_data)
 
 
 def cspr_handle(user_data):
 	fetched=fetch_cspr_data()
-	save_cspr_data(fetched, user_data)
+	save_cspr_data(fetched[0], fetched[1], user_data)

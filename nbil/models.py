@@ -209,6 +209,10 @@ class CSPR_data(models.Model):
 	def save_cspr_obj(cls, ppe, year, month, SE, obj):
 		CSPR_data.objects.update_or_create(defaults=obj, PPE_number=ppe, year_date=year, month_date=month, SE=SE)
 
+	@classmethod
+	def save_data(cls, deff):
+		CSPR_data.objects.bulk_create(deff)
+
 class CSB_data(models.Model):
 	PPE_number=models.CharField(max_length=40)
 	year_date=models.IntegerField(default=1999)

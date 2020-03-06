@@ -36,3 +36,7 @@ class conn_edit_form(forms.ModelForm):
 
 class UploadFileForm(forms.Form):
 	file = forms.FileField()
+
+
+class CSPRimportdate(forms.Form):
+    date = forms.DateTimeField(input_formats=['%Y-%m%d %H:%M'])

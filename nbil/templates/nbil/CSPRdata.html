@@ -1,7 +1,20 @@
 {% extends "nbil/base_generic.html" %}
 {% block content %}
 
+{{ form.date }}
+
+<script>
+  $(function () {
+    $("#id_date").datepicker({
+      format:'yyyy-mm-dd',
+    });
+  });
+</script>
+
+
+{% endblock %}
 <!-- 
+
 <form action="{% url 'downloadexcel' %}" method="post">
 {% csrf_token %}
 
