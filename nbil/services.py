@@ -90,7 +90,7 @@ def import_csb_data(file):
 
 	
 def get_tariff_list():
-	tars = [i[0] for i in CSB_raw.objects.values_list('tariff').distinct()]
+	tars = [i[0] for i in tariff_data.objects.values_list('tariff_schemas').distinct()]
 	return tars
 
 def get_min_max_dates(CSBdata):
@@ -142,8 +142,22 @@ def deco_low_tariff(prof_data, stref_data, row, index, user_data):
 
 		if fetched:
 			object_data={'value_d'+str(index.day): F('value_d'+str(index.day))+line['sum'], 'tariff_d'+str(index.day):row['tariff'], 'SE_name':SE, 'user_id':user_data}					
-			CSB_data.save_obj(ppe, year, month, object_data)
+			CSB_data.save_obj(ppe, year, month, SE, object_data)
 	
+
+def deco_high_tariff(row, index, user_data):
+	days_count=(row['invoice_DT_to']-row['invoice_DT_from']).days+1
+	days_value=(row['zone_1']+row['zone_1']+row['zone_1'])/days_count
+	SE=UR_objects.objects.get(code=row['SE_code'], is_pob=1)
+
+	for d in range((row['invoice_DT_to']-row['invoice_DT_from']).days+1):
+		d_list=row['invoice_DT_from'] + timedelta(d)
+
+		fetched = CSB_data.objects.get_or_create(PPE_number=row['PPE_number'], month_date=d_list.month, year_date=d_list.year, SE_name=SE, user_id=user_data)
+
+		if fetched:
+			object_data={'value_d'+str(d_list.day): F('value_d'+str(d_list.day))+days_value, 'tariff_d'+str(d_list.day):row['tariff'], 'SE_name':SE, 'user_id':user_data}					
+			CSB_data.save_obj(row['PPE_number'], d_list.year, d_list.month, SE, object_data)
 
 def CSB_decompose(user_data):
 
@@ -165,8 +179,7 @@ def CSB_decompose(user_data):
 				deco_low_tariff(prof_data, stref_data, row, index, user_data)
 
 			else:
-				pass
-				# add handling somehow C2+B+A tariffs
+				deco_high_tariff(row, index, user_data)
 
 		CSBdata.update(decomposed=1)
 
@@ -215,7 +228,7 @@ def save_cspr_data(cspr, days_count, user_data):
 		year=row['year']
 		PPE=row['PPE']
 		SE=row['MDD_code']
-		for g in range (1,32): ##problem z zakresem żeby brał tyle dni ile jest w datach od do!!!!!!!!!
+		for g in range (1,32): ##problem z zakresem żeby brał tyle dni ile jest w datach od do!!!!!!!!! robi tylko 1 miesiąc aktualnie
 			try:
 				one_day_dict={'value_d'+str(g): row['ener_'+str(g)], 'status_d'+str(g): row['status_'+str(g)], 
 				'tariff_d'+str(g):row['tariff_'+str(g)], 'SE':row['MDD_code'], 'user':user_data}
