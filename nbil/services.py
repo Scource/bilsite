@@ -4,6 +4,7 @@ import numpy as np
 from django.db.models import Count, F, Value
 import cx_Oracle
 from datetime import datetime, date, timedelta
+from django.db import connection 
 
 
 #tutaj classa do wycigania danych z xlsa i obrobienia na dane do modelu
@@ -67,8 +68,9 @@ def import_csb_data(file):
 		sheet[c]=pd.to_datetime(sheet[c], format='%Y-%m-%d')
 
 	lissss=[]
+	count=0
 	for index, row in sheet.iterrows():
-
+		count+=1
 
 		if CSB_raw.objects.filter(PPE_number=row['Nr_PPE'], SE_code=row['Kod_MDD'], doc_numer=row['Numer_dokumentu'], sell_DT=row['Data_sprz']).exists():
 			pass
@@ -86,7 +88,10 @@ def import_csb_data(file):
 				zone_3=row['Strefa_3'])
 
 			lissss.append(a)
-	CSB_raw.save_data(lissss)
+			if count>5000:
+				CSB_raw.save_data(lissss)
+				lissss=[]	
+	
 
 	
 def get_tariff_list():
@@ -215,11 +220,19 @@ def fetch_cspr_data():
 	finally:			
 		conn.close()
 
-	return result, delta
+	return result
 	# EXTRACT(day FROM ENERGY100_A.I_DATETIME) "day", 
 
-def save_cspr_data(cspr, days_count, user_data):
+# def fetch_cspr_data():
+# 	conn=cx_Oracle.connect('tomwal/09ToWaTW54@10.6.5.222:1521/skome')
+# 	try:
+# 		query="""SELECT DISTINCT  * FROM """
 
+
+# 	finally:
+
+
+def save_cspr_data(cspr, user_data):
 	object_data={}
 	one_day_dict={}
 	list_of_objects=[]
@@ -246,37 +259,6 @@ def save_cspr_data(cspr, days_count, user_data):
 
 	CSPR_data.save_data(list_of_objects)
 
-
-
-
-
-
-
-# # wyciagnąć dane dla wszystkich dni z zakresu i dodać kolumny w dataframie - done
-
-
-# #potem podział na te które sa i ich nie ma
-# #bulk insert dla nieistniejacych
-
-# #update dla pozostałych  - zrobione tylko pod cspr podstawić te które są
-# 	object_data={}
-# 	one_day_dict={}
-# 	for index, row in cspr.iterrows():
-# 		month=row['month']
-# 		year=row['year']
-# 		PPE=row['PPE']
-# 		SE=row['MDD_code']
-# 		for g in range (1,32):
-# 			try:
-# 				one_day_dict={'value_d'+str(g): row['ener_'+str(g)], 'status_d'+str(g): row['status_'+str(g)], 
-# 				'tariff_d'+str(g):row['tariff_'+str(g)], 'SE':row['MDD_code'], 'user':user_data}
-# 			except KeyError:
-# 				pass
-# 			object_data.update(one_day_dict)
-
-# 		CSPR_data.save_cspr_obj(PPE, year, month, SE, object_data)
-
-
 def cspr_handle(user_data):
 	fetched=fetch_cspr_data()
-	save_cspr_data(fetched[0], fetched[1], user_data)
+	save_cspr_data(fetched, user_data)

@@ -76,6 +76,14 @@ WSGI_APPLICATION = 'bil_site_project.wsgi.application'
 
 DATABASES = {
     'default': {
+        'NAME': 'twdb',
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': 'V-OSB-D-DEVDO',
+        'USER': 'tomek',
+        'PASSWORD': '123123',
+
+    },
+    'default1': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
@@ -84,14 +92,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.oracle',        
         'USER': 'tomwal',
         'PASSWORD': '09ToWaTW54',
-        # 'HOST': '10.6.5.222',
-        # 'PORT': '1521',
-
-        # 'skome': {
-        # 'NAME': '10.6.5.222:1521/SKOME',
-        # 'ENGINE': 'django.db.backends.oracle',
-        # 'USER': 'tomwal',
-        # 'PASSWORD': '09ToWaTW54'
     }
 }
 

@@ -11,12 +11,13 @@ from .services import import_ELZ, import_ELP, import_csb_data, CSB_decompose, cs
 
 import cx_Oracle
 
-
+@login_required
 def index(request):
 	ob_list = UR_objects.objects.all()[:6]
 	context = {'kutasy': ob_list}
 	return render(request, 'nbil/nbil_index.html', context)
 
+@login_required
 def ur_list(request):
 	#urlist=get_list_or_404(UR_objects)
 	urlist = UR_objects.objects.all()
@@ -38,25 +39,22 @@ def edit(request, urid):
 	context={'form':form, 'ob':ob}
 	return render(request, 'nbil/uredit.html', context)
 
+@login_required
 def info(request, urid):
 	element=get_object_or_404(UR_objects, id=urid)
-	#conns=get_list_or_404(UR_conn, POB_id=urid)
+	
 	connspob=UR_conn.objects.filter(POB_id=urid)
 	connsse=UR_conn.objects.filter(SE_id=urid)
 	context={'element':element, 'connspob':connspob, 'connsse':connsse}
 	return render(request, 'nbil/urinfo.html', context)
 
-
+@login_required
 def connlist(request):
-	#lista = get_list_or_404(UR_conn)
 	lista = UR_conn.objects.all()
 	fil=UR_conn.objects.all()
 	filtrrr=ConnFilter(request.GET, queryset=fil)
 	context={'filtrrr':filtrrr, 'lista':lista}
 	return render(request, 'nbil/connlist.html', context)
-
-    # context={'lista':lista}
-    # return render(request, 'nbil/connlist.html', context)
 
 @login_required
 def connedit(request, urid):
@@ -135,7 +133,7 @@ def add_CSB_data(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             import_csb_data(request.FILES['file'])
-            CSB_decompose(user_data)
+            #CSB_decompose(user_data)
     else:
         form = UploadFileForm()
 
@@ -146,5 +144,4 @@ def add_CSB_data(request):
 def get_skome_data(request):
 	user_data = request.user
 	cspr_handle(user_data)
-
 	return render(request, 'nbil/CSPRdata.html')
